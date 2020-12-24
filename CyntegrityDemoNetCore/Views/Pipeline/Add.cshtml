@@ -1,0 +1,103 @@
+﻿@model CyntegrityDemoNetCore.Models.TaskListViewModel
+@{
+    ViewData["Title"] = "Create pipeline";
+}
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+    <script>
+        $(function () {
+            $.ajaxSetup({
+                beforeSend: request => {
+                    token = $('input[name="__RequestVerificationToken"]').val()
+                    request.setRequestHeader("RequestVerificationToken", token);
+                }
+            })
+
+            $('#form').validate({
+                rules: {
+                    name: 'required'
+                },
+                messages: {
+                    name: 'Name is required'
+                },
+                submitHandler: form => {
+                    savePipeline()
+                }
+            });
+
+            let pipeline = {}
+            pipeline.taskIds = []
+
+            let onClickToAddButton = function () {
+                let taskId = $(this).siblings('input[name="_id"]').val()
+
+                if (pipeline.taskIds.indexOf(taskId) < 0) {
+                    pipeline.taskIds.push(taskId)
+                    addTaskToPipeline(taskId)
+                }
+            }
+            let addTaskToPipeline = function (taskId) {
+                let addButton = $('input[value=' + taskId + ']').siblings('.btn-add')
+                addButton.hide()
+
+                let newElement = $(addButton).parent().clone()
+                newElement.addClass('task-in-pipeline')
+                newElement.addClass(taskId)
+                $('.tasks-in-pipeline').append(newElement)
+
+                let $removeButton = $('<button class="btn btn-primary btn-remove" type="button">Remove</button>')
+                $removeButton.click(removeTaskFromPipeline)
+                $('.' + taskId).append($removeButton)
+
+                $(addButton).addClass(taskId)
+                $(addButton).addClass('hided')
+            }
+            let removeTaskFromPipeline = function () {
+                let taskId = $(this).siblings('input[name="_id"]').val()
+
+                let index = pipeline.taskIds.indexOf(taskId)
+                if (index >= 0) {
+                    pipeline.taskIds.splice(index, 1)
+
+                    let $addButton = $('.hided').filter('.' + taskId)
+                    $addButton.show()
+
+                    $addButton.removeClass(taskId)
+                    $addButton.removeClass('hided')
+
+
+                    $(this).parent().remove()
+                }
+            }
+            let savePipeline = function () {
+                let url = '/Pipeline/Add'
+
+                $.post({
+                    url: url,
+                    data: pipeline
+                })
+                    .done(function () {
+                        window.location.pathname = '/Pipeline'
+                    })
+                    .fail(function (error) {
+                        if (error.status === 200 && error.statusText === 'OK')
+                            window.location.pathname = '/Pipeline'
+                    })
+            }
+
+            $(document).on('click', '.btn-add', onClickToAddButton)
+            $(document).on('input', '#name', function () {
+                pipeline.name = $(this).val()
+            })
+        })
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Create Pipeline</h1>
+
+    <br />
+
+    <partial name="~/Views/Shared/_PipelinePartial.cshtml" />
+</div>

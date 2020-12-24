@@ -1,0 +1,78 @@
+﻿@model CyntegrityDemoNetCore.Models.Pipeline
+@{
+    ViewData["Title"] = "Pipeline " + Model.Name;
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            const hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/pipelinehub")
+                .build();
+
+            hubConnection.on(@Html.Raw(Json.Serialize(Model.Id.ToString())), data => {
+                let $message = $(
+                    '<div class="fade show alert alert-info">\n' +
+                    '  <button class="close" type="button" data-dismiss="alert">×</button>' +
+                    'Pipeline <b>' + data + '</b> finished\n' +
+                    '</div>');
+                $('#messages').append($message);
+            });
+
+            hubConnection.start();
+
+            $(document).on('click', '#btn-calculate', function () {
+                let pipelineId = @Html.Raw(Json.Serialize(Model.Id.ToString()))
+                $.get(pipelineId + '/calculate').done(data => {
+                    let $message = $(
+                        '<div class="fade show alert alert-info">\n' +
+                        '  <button class="close" type="button" data-dismiss="alert">×</button>' +
+                        'Average time: ' + data + ' seconds\n' +
+                        '</div>');
+                    $('#messages').append($message);
+                })
+            })
+
+            $(document).on('click', '#btn-run', function () {
+                let pipelineId = @Html.Raw(Json.Serialize(Model.Id.ToString()))
+                $.get(pipelineId + '/run')
+            })
+        })
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.Name</h1>
+    <div id="messages"></div>
+    <p>
+        @{
+            if (Model.Tasks.Count > 0) {
+                <span>Tasks:</span>
+            }
+            int i = 0;
+            foreach (var task in Model.Tasks) {
+                @task.Name
+                @if (i <= Model.Tasks.Count - 2) {
+                    <span>-></span>
+                }
+                i++;
+            }
+        }
+    </p>
+    <p class="text-muted">@Model.CreatedAt.ToShortDateString()</p>
+    <p class="text-muted">@Model.UserName</p>
+    <button class="btn btn-success" id="btn-calculate">Calculate average time</button>
+    <button class="btn btn-success" id="btn-run">Run</button>
+    
+    <br /><br />
+    
+    <div>
+        <a asp-controller="Pipeline" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        @using (Html.BeginForm("Delete", "Pipeline", FormMethod.Post, new { style = "display: inline" })) {
+            <input type="hidden" name="id" value=@Model.Id />
+            <button class="btn btn-link text-danger" type="submit" onclick="showConfirmDialog(event)">Delete</button>
+        }
+        <a asp-controller="Pipeline" asp-action="Index" class="btn btn-primary">To list</a>
+    </div>
+</div>
+

@@ -1,0 +1,34 @@
+﻿@model CyntegrityDemoNetCore.Models.PipelineTask
+@{
+    ViewData["Title"] = "Edit task";
+}
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+}
+
+<div class="text-center">
+    <h1 class="display-4">Edit @Model.Name</h1>
+
+    @using (Html.BeginForm("Edit", "Task", FormMethod.Post)) {
+        <div class="text-center">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name">Name: </label>
+                <input asp-for="Name" type="text" />
+                <span asp-validation-for="Name" />
+            </div>
+            <div class="form-group">
+                <label asp-for="AverageTime">AverageTime: </label>
+                <input asp-for="AverageTime" type="text" />
+                <span asp-validation-for="AverageTime" />
+            </div>
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="UserId" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+                <a asp-controller="Task" asp-action="Index" class="btn btn-primary">Cancel</a>
+            </div>
+        </div>
+    }
+</div>
