@@ -7,19 +7,21 @@
     <h1 class="display-4 text-center">Tasks</h1>
 
     <ul class="list-group">
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-2">
-                    <span><b>Name</b></span>
+        @if (Model.Tasks.Count > 0) {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-2">
+                        <span><b>Name</b></span>
+                    </div>
+                    <div class="col-2">
+                        <span><b>AverageTime</b></span>
+                    </div>
+                    <div class="col-7">
+                        <span><b>Author</b></span>
+                    </div>
                 </div>
-                <div class="col-2">
-                    <span><b>AverageTime</b></span>
-                </div>
-                <div class="col-7">
-                    <span><b>Author</b></span>
-                </div>
-            </div>
-        </li>
+            </li>
+        }
 
         @foreach (var task in Model.Tasks) {
             <li class="list-group-item">
@@ -56,7 +58,13 @@
 
     <br />
 
-    <div class="text-right">
-        @Html.ActionLink("Add", "Add", "Task", null, new { @class = "btn btn-primary", @role = "button" })
-    </div>
+    @if (Model.Tasks.Count > 0) {
+        <div class="text-right">
+            @Html.ActionLink("Add", "Add", "Task", null, new { @class = "btn btn-primary", @role = "button" })
+        </div>
+    } else {
+        <div class="text-center">
+            @Html.ActionLink("Add", "Add", "Task", null, new { @class = "btn btn-primary", @role = "button" })
+        </div>
+    }
 </div>

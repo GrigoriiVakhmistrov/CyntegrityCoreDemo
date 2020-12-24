@@ -2,6 +2,6 @@
 
 namespace CyntegrityDemoNetCore.Models {
     public class TaskListViewModel {
-        public IEnumerable<PipelineTask> Tasks { get; set; }
+        public List<PipelineTask> Tasks { get; set; }
     }
 }

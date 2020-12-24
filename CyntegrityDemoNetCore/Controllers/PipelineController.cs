@@ -1,9 +1,8 @@
-﻿using CyntegrityDemoNetCore.Hubs;
-using CyntegrityDemoNetCore.Models;
+﻿using CyntegrityDemoNetCore.Models;
 using CyntegrityDemoNetCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+using System.Linq;
 
 namespace CyntegrityDemoNetCore.Controllers {
     [Authorize]
@@ -22,7 +21,7 @@ namespace CyntegrityDemoNetCore.Controllers {
         }
         public async System.Threading.Tasks.Task<IActionResult> IndexAsync() {
             var pipelines = await _db.GetPipelines();
-            return View(new PipelineListViewModel { Pipelines = pipelines });
+            return View(new PipelineListViewModel { Pipelines = pipelines.ToList() });
         }
         [Route("[controller]/{id}")]
         [HttpGet]
@@ -41,7 +40,7 @@ namespace CyntegrityDemoNetCore.Controllers {
         [HttpGet]
         public async System.Threading.Tasks.Task<IActionResult> AddAsync() {
             var tasks = await _taskDb.GetTasks();
-            return View(new TaskListViewModel { Tasks = tasks });
+            return View(new TaskListViewModel { Tasks = tasks.ToList() });
         }
         [Route("[controller]/Add")]
         [HttpPost]
@@ -66,7 +65,7 @@ namespace CyntegrityDemoNetCore.Controllers {
                 return new ChallengeResult();
 
             var tasks = await _taskDb.GetTasks();
-            return View(new PipelineEditViewModel() { Pipeline = pipeline, Tasks = tasks });
+            return View(new PipelineEditViewModel() { Pipeline = pipeline, Tasks = tasks.ToList() });
         }
         [Route("[controller]/{id?}/[action]")]
         [HttpPost]

@@ -2,6 +2,7 @@
 using CyntegrityDemoNetCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace CyntegrityDemoNetCore.Controllers {
     [Authorize]
@@ -13,7 +14,7 @@ namespace CyntegrityDemoNetCore.Controllers {
         }
         public async System.Threading.Tasks.Task<IActionResult> IndexAsync() {
             var tasks = await _db.GetTasks();
-            return View(new TaskListViewModel { Tasks = tasks });
+            return View(new TaskListViewModel { Tasks = tasks.ToList() });
         }
         [Route("[controller]/{id}")]
         [HttpGet]
