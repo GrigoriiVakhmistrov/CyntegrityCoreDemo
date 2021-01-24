@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-pid 60080d1dd43451d9d28c20f3"
+    }
+  }
+}

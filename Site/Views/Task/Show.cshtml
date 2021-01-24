@@ -1,0 +1,19 @@
+﻿@model Core.Models.IPipelineTask
+@{
+    ViewData["Title"] = "Task " + Model.Name;
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.Name</h1>
+    <p>Average Time: @Model.AverageTime</p>
+    <p class="text-muted">@Model.CreatedAt.ToShortDateString()</p>
+    <p class="text-muted">@Model.UserName</p>
+    <div>
+        <a asp-controller="Task" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        @using (Html.BeginForm("Delete", "Task", FormMethod.Post, new { style = "display: inline" })) {
+            <input type="hidden" name="id" value=@Model.Id />
+            <button class="btn btn-link text-danger" type="submit" onclick="showConfirmDialog(event)">Delete</button>
+        }
+        <a asp-controller="Task" asp-action="Index" class="btn btn-primary">To list</a>
+    </div>
+</div>

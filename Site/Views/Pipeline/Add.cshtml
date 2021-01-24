@@ -1,0 +1,40 @@
+﻿@model Site.Models.ITaskListViewModel
+@{
+    ViewData["Title"] = "Create pipeline";
+}
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+    <script>
+        $(function () {
+            let pipeline = {}
+            pipeline.taskIds = []
+            setAntiforgeryHeader()
+
+            $('#form').validate({
+                rules: {
+                    name: 'required'
+                },
+                messages: {
+                    name: 'Name is required'
+                },
+                submitHandler: form => {
+                    let url = '/Pipeline/Add'
+                    let redirectUrl = '/Pipeline'
+                    savePipeline(pipeline, url, redirectUrl)
+                }
+            });
+
+            $(document).on('click', '.btn-add', { pipeline: pipeline }, onClickToAddButton)
+            updatePipelineName(pipeline)
+        })
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Create Pipeline</h1>
+
+    <br />
+
+    <partial name="~/Views/Shared/_PipelinePartial.cshtml" />
+</div>

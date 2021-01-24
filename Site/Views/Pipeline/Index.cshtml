@@ -1,0 +1,64 @@
+﻿@model Site.Models.IPipelineListViewModel
+@{
+    ViewData["Title"] = "Pipelines";
+}
+
+<div>
+    <h1 class="display-4 text-center">Pipelines</h1>
+
+    <ul class="list-group">
+        @if (Model.Pipelines.ToList().Count > 0) {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-2">
+                        <span><b>Name</b></span>
+                    </div>
+                    <div class="col-7">
+                        <span><b>Author</b></span>
+                    </div>
+                </div>
+            </li>
+        }
+
+        @foreach (var pipeline in Model.Pipelines) {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-2">
+                        <span><b>@pipeline.Name</b></span>
+                    </div>
+                    <div class="col-7">
+                        <span>@pipeline.UserName</span>
+                    </div>
+                    <div class="col-1">
+                        @Html.ActionLink("Show", "Show", "Pipeline", new { id = pipeline.Id }, new { @class = "btn btn-primary", @role = "button" })
+                    </div>
+                    <div class="col-1">
+                        @if (User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == pipeline.UserId) {
+                            @Html.ActionLink("Edit", "Edit", "Pipeline", new { id = pipeline.Id }, new { @class = "btn btn-primary", @role = "button" });
+                        }
+                    </div>
+                    <div class="col-1">
+                        @if (User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == pipeline.UserId) {
+                            using (Html.BeginForm("Delete", "Pipeline", FormMethod.Post)) {
+                                <input type="hidden" name="id" value=@pipeline.Id />
+                                <button class="btn btn-link text-danger" type="submit" onclick="showConfirmDialog(event)">Delete</button>
+                            }
+                        }
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <br />
+
+    @if (Model.Pipelines.ToList().Count > 0) {
+        <div class="text-right">
+            @Html.ActionLink("Add", "Add", "Pipeline", null, new { @class = "btn btn-primary", @role = "button" })
+        </div>
+    } else {
+        <div class="text-center">
+            @Html.ActionLink("Add", "Add", "Pipeline", null, new { @class = "btn btn-primary", @role = "button" })
+        </div>
+    }
+</div>

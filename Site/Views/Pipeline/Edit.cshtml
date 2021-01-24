@@ -1,0 +1,44 @@
+﻿@model Site.Models.IPipelineEditViewModel
+@{
+    ViewData["Title"] = "Edit pipeline";
+}
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+    <script>
+        $(function () {
+            let pipeline = @Html.Raw(Json.Serialize(Model.Pipeline))
+            pipeline.id = @Html.Raw(Json.Serialize(Model.Pipeline.Id))
+            pipeline.taskIds = @Html.Raw(Json.Serialize(Model.Pipeline.TaskIds))
+            setAntiforgeryHeader()
+
+            $('#form').validate({
+                rules: {
+                    name: 'required'
+                },
+                messages: {
+                    name: 'Name is required'
+                },
+                submitHandler: form => {
+                    let url = '/Pipeline/' + pipeline.id + '/Edit'
+                    let redirectUrl = '/Pipeline/' + pipeline.id
+                    savePipeline(pipeline, url, redirectUrl)
+                }
+            });
+
+            pipeline.taskIds.forEach(taskId => addTaskToPipeline(pipeline, taskId));
+
+            $(document).on('click', '.btn-add', { pipeline: pipeline }, onClickToAddButton)
+            $('#name').val(pipeline.name)
+            updatePipelineName(pipeline)
+        })
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Edit @Model.Pipeline.Name</h1>
+
+    <br />
+
+    <partial name="~/Views/Shared/_PipelinePartial.cshtml" />
+</div>

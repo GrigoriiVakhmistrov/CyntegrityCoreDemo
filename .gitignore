@@ -156,3 +156,5 @@ release/
 .mfactor/
 codeStyles/
 
+**/wwwroot/lib
+
